@@ -1,4 +1,5 @@
 src
 files
+del
 tsconfig.json
 .env

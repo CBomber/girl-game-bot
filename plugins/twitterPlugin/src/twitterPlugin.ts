@@ -110,6 +110,8 @@ class TwitterPlugin {
             feedbackMessage
           );
         } catch (e) {
+          console.log(`--------------------search error-------------------------------`)
+          console.log(e)
           return new ExecutableGameFunctionResponse(
             ExecutableGameFunctionStatus.Failed,
             "Failed to search tweets"
@@ -133,6 +135,10 @@ class TwitterPlugin {
       ] as const,
       executable: async (args, logger) => {
         try {
+          // console.log({
+          //   name:'reply---------------------------',
+          //   args
+          // })
           if (!args.tweet_id || !args.reply) {
             return new ExecutableGameFunctionResponse(
               ExecutableGameFunctionStatus.Failed,
@@ -142,13 +148,22 @@ class TwitterPlugin {
 
           logger(`Replying [${args.tweet_id}]: ${args.reply}`);
 
-          await this.twitterClient.v2.reply(args.tweet_id, args.reply);
+          if (!args.tweet_id || !/^\d{1,19}$/.test(args.tweet_id)) {
+            return new ExecutableGameFunctionResponse(
+              ExecutableGameFunctionStatus.Failed,
+              "Invalid tweet ID format"
+            );
+          }
 
+          await this.twitterClient.v2.reply(args.reply, args.tweet_id); 
+          
           return new ExecutableGameFunctionResponse(
             ExecutableGameFunctionStatus.Done,
             "Replied to tweet"
           );
         } catch (e) {
+          console.log(`--------------------reply error-------------------------------`)
+          console.log(e)
           return new ExecutableGameFunctionResponse(
             ExecutableGameFunctionStatus.Failed,
             "Failed to reply to tweet"
@@ -187,6 +202,8 @@ class TwitterPlugin {
             "Tweet posted"
           );
         } catch (e) {
+          console.log(`--------------------post error-------------------------------`)
+          console.log(e)
           return new ExecutableGameFunctionResponse(
             ExecutableGameFunctionStatus.Failed,
             "Failed to post tweet"
